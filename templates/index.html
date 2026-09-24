@@ -7,22 +7,22 @@
         <div>
             <h2 class="fw-bold mb-1" style="font-size: clamp(1.4rem, 4vw, 1.85rem);">
                 {% if feed_type == 'feed' %}
-                    <i class="fas fa-home text-primary me-2"></i>{{ t('My Feed') }}
+                    <i class="fas fa-home text-primary me-2"></i>My Feed
                 {% else %}
-                    <i class="fas fa-globe text-primary me-2"></i>{{ t('Recent Posts') }}
+                    <i class="fas fa-globe text-primary me-2"></i>Recent Posts
                 {% endif %}
             </h2>
             <small class="text-muted">
                 {% if feed_type == 'feed' %}
-                    {{ t('Posts from people you follow') }}
+                    Posts from people you follow
                 {% else %}
-                    {{ t('Login to see your personalized feed') }}
+                    Login to see your personalized feed
                 {% endif %}
             </small>
         </div>
         {% if session.logged_in %}
             <a href="{{ url_for('new_post') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i> {{ t('New Post') }}
+                <i class="fas fa-plus me-1"></i> New Post
             </a>
         {% endif %}
     </div>
@@ -90,84 +90,23 @@
     {% else %}
         <div class="text-center py-5">
             <div style="font-size: 4rem; opacity: 0.4;">📭</div>
-            <h5 class="mt-3 fw-bold">{{ t('No posts yet') }}</h5>
+            <h5 class="mt-3 fw-bold">No posts yet</h5>
             <p class="text-muted mb-4">
                 {% if feed_type == 'feed' %}
-                    {{ t('Follow some users or create your first post!') }}
+                    Follow some users or create your first post!
                 {% else %}
-                    {{ t('Be the first to post!') }}
+                    Be the first to post!
                 {% endif %}
             </p>
             {% if session.logged_in %}
                 <a href="{{ url_for('new_post') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ t('Create Post') }}
+                    <i class="fas fa-plus me-1"></i> Create Post
                 </a>
             {% else %}
                 <a href="{{ url_for('register') }}" class="btn btn-primary">
-                    <i class="fas fa-user-plus me-1"></i> {{ t('Get Started') }}
+                    <i class="fas fa-user-plus me-1"></i> Get Started
                 </a>
             {% endif %}
         </div>
     {% endif %}
-    
-    <!-- Added Projects section: Personal Portfolio -->
-    <section id="projects" class="mt-5">
-        <div class="container">
-            <div class="section-header"><h2>Projects</h2><div class="section-divider"></div></div>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&h=600&fit=crop" alt="Personal Portfolio">
-                    <h3>Personal Portfolio Website</h3>
-                    <span class="project-tag">Portfolio</span>
-                    <p>A professional personal portfolio showcasing teaching, research, and web projects. Designed with polished UI and responsive layout.</p>
-                    <div class="tech-tags">
-                        <span class="tech-tag">HTML</span>
-                        <span class="tech-tag">CSS</span>
-                        <span class="tech-tag">JavaScript</span>
-                        <span class="tech-tag">Responsive Design</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/guyodika6891-lgtm/my-portfolio-website" class="btn" target="_blank"><i class="fab fa-github"></i> Source</a>
-                        <a href="/" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> View Live</a>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=600&fit=crop" alt="Social Media App">
-                    <h3>SocialConnect — Social Media App</h3>
-                    <span class="project-tag">Full-Stack Web App</span>
-                    <p>A full-featured social/blog application with user accounts, posts, likes, comments, search, notifications, and responsive UI. Built for community engagement and lightweight deployment.</p>
-                    <div class="tech-tags">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">Flask</span>
-                        <span class="tech-tag">SQLAlchemy</span>
-                        <span class="tech-tag">Bootstrap 5</span>
-                        <span class="tech-tag">SQLite</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/guyodika6891-lgtm/social_media" class="btn" target="_blank"><i class="fab fa-github"></i> Source</a>
-                        <a href="/" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> View App</a>
-                    </div>
-                </div>
-
-                <!-- SOCIAL PROJECT (Expense-tracker style card) -->
-                <div class="project-card">
-                    <img src="https://images.unsplash.com/photo-1520975916971-8d8b0a7a9f9b?w=600&h=400&fit=crop" alt="SocialConnect Live">
-                    <h3>SocialConnect (Live)</h3>
-                    <span class="project-tag">Community Platform</span>
-                    <p>A polished social media and blogging platform with posting, following, search, notifications, and media uploads. Designed for lightweight deployment and easy customization.</p>
-                    <div class="tech-tags">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">Flask</span>
-                        <span class="tech-tag">SQLAlchemy</span>
-                        <span class="tech-tag">Bootstrap 5</span>
-                        <span class="tech-tag">SQLite</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="/" class="btn btn-primary" target="_blank"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                        <a href="https://github.com/guyodika6891-lgtm/social_media" class="btn" target="_blank"><i class="fab fa-github"></i> Source</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 {% endblock %}
