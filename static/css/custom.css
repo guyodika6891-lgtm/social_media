@@ -1,0 +1,56 @@
+:root{
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --muted: #64748b;
+  --primary: #6366f1;
+  --accent: #ec4899;
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 20px 40px rgba(16,24,40,0.06);
+}
+
+*{transition: all 220ms cubic-bezier(.2,.9,.2,1);}
+body{background: var(--bg); color: #0f172a;}
+
+.content-card{border-radius:28px; padding:28px;}
+
+.card{border:none; background:var(--card); box-shadow:var(--shadow); border-radius:16px}
+.card:hover{transform: translateY(-6px); box-shadow:0 30px 60px rgba(16,24,40,0.09)}
+
+.navbar-modern{border-radius:12px}
+.navbar-modern .nav-link{padding:8px 12px}
+
+.btn-primary{background:linear-gradient(135deg,var(--primary),#8b5cf6); border:none}
+.btn-outline-primary{border:2px solid rgba(99,102,241,0.12);}
+
+.avatar{box-shadow:0 6px 18px rgba(16,24,40,0.08); border:3px solid rgba(255,255,255,0.5)}
+
+/* Search input styling */
+.input-group .form-control{background:transparent; border:none;}
+.input-group .input-group-text{background:transparent; border:none}
+
+/* Notifications badge */
+.badge.bg-danger{font-weight:700; box-shadow:0 6px 18px rgba(236,72,153,0.08)}
+
+/* Make images gentle rounded */
+img{border-radius:12px}
+
+/* Dark mode */
+.dark-mode{
+  --bg: #0b1220;
+  --card: #071022;
+  --muted: #94a3b8;
+  --primary: #7c5cff;
+  --accent: #ff6fa3;
+  --glass: rgba(255,255,255,0.03);
+  --shadow: 0 14px 40px rgba(2,6,23,0.6);
+}
+
+.dark-mode body{background:var(--bg); color:#e6eef8}
+.dark-mode .card{background:var(--card)}
+.dark-mode .content-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+
+/* Responsive tweaks */
+@media (max-width:768px){
+  .hero-header{padding:28px 12px}
+  .content-card{padding:18px}
+}

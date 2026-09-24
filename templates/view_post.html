@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Post by {{ post.author.username }} - SocialConnect{% endblock %}
+
+{% block content %}
+    <!-- Back button -->
+    <div class="mb-3">
+        <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> {{ t('Back to Feed') }}
+        </a>
+    </div>
+
+    <!-- Post Card -->
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <!-- Header -->
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <a href="{{ url_for('profile', username=post.author.username) }}" style="text-decoration: none;">
+                    {% if post.author.profile_picture %}
+                        <img src="{{ url_for('static', filename='uploads/profiles/' + post.author.profile_picture) }}"
+                             class="avatar" alt="{{ post.author.username }}">
+                    {% else %}
+                        <div class="avatar">{{ post.author.username[0]|upper }}</div>
+                    {% endif %}
+                </a>
+                <div class="flex-grow-1 min-w-0">
+                    <a href="{{ url_for('profile', username=post.author.username) }}"
+                       style="text-decoration: none; color: inherit;">
+                        <strong>{{ post.author.username }}</strong>
+                    </a>
+                    <br>
+                    <small class="text-muted">{{ post.created_at.strftime('%b %d, %Y at %H:%M') }}</small>
+                </div>
+                {% if session.logged_in and post.user_id == session.user_id %}
+                    <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Delete this post?')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <!-- Content -->
+            <p style="white-space: pre-wrap; line-height: 1.6; font-size: 1.05rem; margin-bottom: 12px;">{{ post.content }}</p>
+
+            <!-- Image -->
+            {% if post.image_filename %}
+                <div style="border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
+                    <img src="{{ url_for('static', filename='uploads/posts/' + post.image_filename) }}"
+                         alt="Post image" style="width: 100%; display: block;">
+                </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="d-flex gap-3 pt-3 border-top">
+                {% if session.logged_in %}
+                    {% set liked = post.id in liked_post_ids %}
+                    <form method="POST" action="{{ url_for('toggle_like', post_id=post.id) }}" style="display: inline;">
+                        <button type="submit"
+                                class="btn btn-sm {% if liked %}btn-danger{% else %}btn-outline-danger{% endif %}"
+                                style="border: none;">
+                            <i class="fas fa-heart"></i> {{ post.likes|length }}
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="text-muted small"><i class="fas fa-heart"></i> {{ post.likes|length }}</span>
+                {% endif %}
+
+                <span class="text-muted small pt-2">
+                    <i class="fas fa-comment"></i> {{ post.comments|length }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">
+                <i class="fas fa-comments text-primary me-2"></i>Comments ({{ post.comments|length }})
+            </h5>
+
+            <!-- Add Comment Form -->
+            {% if session.logged_in %}
+                <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="content" class="form-control"
+                               placeholder="Write a comment..." required maxlength="500">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Post
+                        </button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="alert alert-info mb-4">
+                    <a href="{{ url_for('login') }}" class="alert-link">{{ t('Login') }}</a> {{ t('to leave a comment.') }}
+                </div>
+            {% endif %}
+
+            <!-- Comments List -->
+            {% if post.comments %}
+                {% for comment in post.comments|sort(attribute='created_at', reverse=True) %}
+                    <div class="d-flex gap-3 mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                        <a href="{{ url_for('profile', username=comment.author.username) }}" style="text-decoration: none;">
+                            {% if comment.author.profile_picture %}
+                                <img src="{{ url_for('static', filename='uploads/profiles/' + comment.author.profile_picture) }}"
+                                     class="avatar avatar-sm" alt="{{ comment.author.username }}">
+                            {% else %}
+                                <div class="avatar avatar-sm">{{ comment.author.username[0]|upper }}</div>
+                            {% endif %}
+                        </a>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div>
+                                    <a href="{{ url_for('profile', username=comment.author.username) }}"
+                                       style="text-decoration: none; color: inherit;">
+                                        <strong>{{ comment.author.username }}</strong>
+                                    </a>
+                                    <small class="text-muted ms-2">
+                                        {{ comment.created_at.strftime('%b %d, %Y at %H:%M') }}
+                                    </small>
+                                </div>
+                                {% if session.logged_in and (comment.user_id == session.user_id or post.user_id == session.user_id) %}
+                                    <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0"
+                                                onclick="return confirm('Delete this comment?')" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            <p style="white-space: pre-wrap; margin: 6px 0 0 0;">{{ comment.content }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted text-center mb-0 py-3">No comments yet. Be the first!</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

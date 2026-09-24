@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Feed - SocialConnect{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold mb-1" style="font-size: clamp(1.4rem, 4vw, 1.85rem);">
+                {% if feed_type == 'feed' %}
+                    <i class="fas fa-home text-primary me-2"></i>{{ t('My Feed') }}
+                {% else %}
+                    <i class="fas fa-globe text-primary me-2"></i>{{ t('Recent Posts') }}
+                {% endif %}
+            </h2>
+            <small class="text-muted">
+                {% if feed_type == 'feed' %}
+                    {{ t('Posts from people you follow') }}
+                {% else %}
+                    {{ t('Login to see your personalized feed') }}
+                {% endif %}
+            </small>
+        </div>
+        {% if session.logged_in %}
+            <a href="{{ url_for('new_post') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> {{ t('New Post') }}
+            </a>
+        {% endif %}
+    </div>
+
+    {% if posts %}
+        {% for post in posts %}
+            <div class="card mb-3">
+                <div class="card-body p-4">
+                    <!-- Header -->
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <a href="{{ url_for('profile', username=post.author.username) }}" style="text-decoration: none;">
+                            {% if post.author.profile_picture %}
+                                <img src="{{ url_for('static', filename='uploads/profiles/' + post.author.profile_picture) }}" class="avatar" alt="{{ post.author.username }}">
+                            {% else %}
+                                <div class="avatar">{{ post.author.username[0]|upper }}</div>
+                            {% endif %}
+                        </a>
+                        <div class="flex-grow-1 min-w-0">
+                            <a href="{{ url_for('profile', username=post.author.username) }}" style="text-decoration: none; color: inherit;">
+                                <strong>{{ post.author.username }}</strong>
+                            </a>
+                            <br>
+                            <small class="text-muted">{{ post.created_at.strftime('%b %d, %Y at %H:%M') }}</small>
+                        </div>
+                        {% if session.logged_in and post.user_id == session.user_id %}
+                            <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this post?')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content -->
+                    <p style="white-space: pre-wrap; line-height: 1.6; font-size: 1rem; margin-bottom: 12px;">{{ post.content }}</p>
+
+                    <!-- Image -->
+                    {% if post.image_filename %}
+                        <div style="border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
+                            <img src="{{ url_for('static', filename='uploads/posts/' + post.image_filename) }}"
+                                 alt="Post image" style="width: 100%; display: block;">
+                        </div>
+                    {% endif %}
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-3 pt-2 border-top">
+                        {% if session.logged_in %}
+                            {% set liked = post.id in liked_post_ids %}
+                            <form method="POST" action="{{ url_for('toggle_like', post_id=post.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm {% if liked %}btn-danger{% else %}btn-outline-danger{% endif %}" style="border: none;">
+                                    <i class="fas fa-heart"></i> {{ post.likes|length }}
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted small"><i class="fas fa-heart"></i> {{ post.likes|length }}</span>
+                        {% endif %}
+
+                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-sm btn-outline-primary" style="border: none;">
+                            <i class="fas fa-comment"></i> {{ post.comments|length }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-5">
+            <div style="font-size: 4rem; opacity: 0.4;">📭</div>
+            <h5 class="mt-3 fw-bold">{{ t('No posts yet') }}</h5>
+            <p class="text-muted mb-4">
+                {% if feed_type == 'feed' %}
+                    {{ t('Follow some users or create your first post!') }}
+                {% else %}
+                    {{ t('Be the first to post!') }}
+                {% endif %}
+            </p>
+            {% if session.logged_in %}
+                <a href="{{ url_for('new_post') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> {{ t('Create Post') }}
+                </a>
+            {% else %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-1"></i> {{ t('Get Started') }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Explore - SocialConnect{% endblock %}
+
+{% block content %}
+    <h2 class="fw-bold mb-4"><i class="fas fa-compass text-primary me-2"></i>{{ t('Explore') }}</h2>
+
+    <!-- Suggested Users -->
+    {% if suggested_users %}
+        <h5 class="fw-bold mb-3">👥 Suggested Users</h5>
+        <div class="row g-3 mb-5">
+            {% for u in suggested_users %}
+                <div class="col-md-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body p-3">
+                            {% if u.profile_picture %}
+                                <img src="{{ url_for('static', filename='uploads/profiles/' + u.profile_picture) }}" class="avatar" style="margin: 0 auto;">
+                            {% else %}
+                                <div class="avatar" style="margin: 0 auto;">{{ u.username[0]|upper }}</div>
+                            {% endif %}
+                            <h6 class="fw-bold mt-2 mb-1">{{ u.username }}</h6>
+                            <a href="{{ url_for('profile', username=u.username) }}" class="btn btn-sm btn-outline-primary w-100 mt-2">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Recent Posts -->
+    <h5 class="fw-bold mb-3">📸 Recent Posts</h5>
+    {% if posts %}
+        <div class="row g-3">
+            {% for post in posts %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="avatar avatar-sm">{{ post.author.username[0]|upper }}</div>
+                                <strong>{{ post.author.username }}</strong>
+                            </div>
+                            <p style="font-size: 0.9rem;">{{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}</p>
+                            {% if post.image_filename %}
+                                <img src="{{ url_for('static', filename='uploads/posts/' + post.image_filename) }}" style="width: 100%; border-radius: 8px; margin-bottom: 8px;">
+                            {% endif %}
+                            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-4 text-muted">No posts to explore yet</div>
+    {% endif %}
+{% endblock %}
